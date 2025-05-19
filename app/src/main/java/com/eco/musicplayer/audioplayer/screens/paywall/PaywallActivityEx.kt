@@ -130,7 +130,7 @@ private fun PaywallActivity.setupProductDetails(
         val lastOffer = productDetails.subscriptionOfferDetails?.lastOrNull()
 
         firstOffer?.pricingPhases?.pricingPhaseList?.firstOrNull()?.let { phase ->
-            val periodText = parsePeriodToReadableText(phase.billingPeriod ?: "")
+            val periodText = parsePeriodToReadableText(phase.billingPeriod)
             tv3.setVisibleText(
                 when {
                     phase.priceAmountMicros == 0L -> "Miễn phí"
@@ -141,7 +141,7 @@ private fun PaywallActivity.setupProductDetails(
         } ?: tv3.setVisibleText("N/A")
 
         lastOffer?.pricingPhases?.pricingPhaseList?.firstOrNull { it.priceAmountMicros > 0 }?.let { phase ->
-            val periodText = parsePeriodToReadableText(phase.billingPeriod ?: "")
+            val periodText = parsePeriodToReadableText(phase.billingPeriod)
             tv4.text = phase.formattedPrice
             tv5.text = if (periodText != getString(R.string.unclear)) periodText else getString(R.string.unclear)
         } ?: setupEmptySubscription(tv4, tv5)
@@ -298,7 +298,7 @@ fun PaywallActivity.updatePlanSelectionBasedOnPurchases() {
         }
     }
 
-    binding.btnStartFreeTrial.text = if (currentSubscription != null) getString(R.string.upgrade) else getString(R.string.free_trial)
+    binding.btnStartFreeTrial.text = if (currentSubscription != null) getString(R.string.upgrade) else getString(R.string.start)
 }
 
 private fun PaywallActivity.updatePurchasedBadge(productId: String) {

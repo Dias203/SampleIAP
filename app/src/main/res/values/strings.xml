@@ -45,6 +45,7 @@
     <string name="onetime_purchases">Thanh toán một lần: %s</string>
     <string name="unknown_price">Giá không xác định</string>
     <string name="purchased">Đã mua</string>
+    <string name="buy">Mua</string>
     <string name="upgrade">Nâng cấp gói</string>
-    <string name="free_trial">Bắt đầu dùng thử miễn phí</string>
+    <string name="start">Bắt đầu</string>
 </resources>

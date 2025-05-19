@@ -3,7 +3,7 @@ package com.eco.musicplayer.audioplayer.helpers
 import android.content.Context
 import android.content.SharedPreferences
 
-object PurchasePrefs {
+object PurchasePrefsHelper {
     private const val PREF_NAME = "PurchasePrefs"
     private const val KEY_PURCHASED_PRODUCTS = "purchased_products"
 

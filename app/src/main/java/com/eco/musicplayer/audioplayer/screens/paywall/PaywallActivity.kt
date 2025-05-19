@@ -59,7 +59,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.eco.musicplayer.audioplayer.billing.InAppBillingManager
 import com.eco.musicplayer.audioplayer.billing.model.BaseProductDetails
-import com.eco.musicplayer.audioplayer.helpers.PurchasePrefs
+import com.eco.musicplayer.audioplayer.helpers.PurchasePrefsHelper
 import com.eco.musicplayer.audioplayer.constants.PRODUCT_ID_LIFETIME
 import com.eco.musicplayer.audioplayer.constants.PRODUCT_ID_MONTH
 import com.eco.musicplayer.audioplayer.constants.PRODUCT_ID_YEAR
@@ -84,7 +84,7 @@ class PaywallActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // Tải trạng thái mua hàng từ SharedPreferences
-        purchasedProducts.addAll(PurchasePrefs.getPurchasedProducts(this))
+        purchasedProducts.addAll(PurchasePrefsHelper.getPurchasedProducts(this))
         updatePlanSelectionBasedOnPurchases()
 
         // Gọi các hàm khởi tạo
@@ -109,16 +109,5 @@ class PaywallActivity : AppCompatActivity() {
         inAppBillingManager.endConnectToGooglePlay()
         inAppBillingManager.destroy()
         super.onDestroy()
-    }
-
-    fun updatePurchases(purchases: List<BaseProductDetails>) {
-        purchasedProducts.clear()
-        purchases.forEach { purchasedProducts.add(it.productId) }
-
-        // Cập nhật SharedPreferences
-        PurchasePrefs.savePurchasedProducts(this, purchasedProducts)
-
-        updatePlanSelectionBasedOnPurchases()
-        updateItem()
     }
 }
