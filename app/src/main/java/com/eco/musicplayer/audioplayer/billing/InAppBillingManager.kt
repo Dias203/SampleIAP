@@ -56,6 +56,7 @@ class InAppBillingManager(context: Context) {
 
     fun startConnectToGooglePlay() {
         listener?.onStartConnectToGooglePlay()
+        Log.d("TAG", "startConnectToGooglePlay: 1231231")
         billingClient.startConnection(object : BillingClientStateListener {
             override fun onBillingSetupFinished(billingResult: BillingResult) {
                 post {
@@ -185,13 +186,13 @@ class InAppBillingManager(context: Context) {
     }
 
     private fun queryPurchases() {
-        val purchasedProducts = mutableListOf<BaseProductDetails>()
+        val purchasedItems = mutableListOf<Purchase>()
         var subsQueryCompleted = false
         var inAppQueryCompleted = false
 
         fun checkCompletion() {
             if (subsQueryCompleted && inAppQueryCompleted) {
-                post { listener?.onPurchasesLoaded(purchasedProducts) }
+                post { listener?.onPurchasesLoaded(purchasedItems) }
             }
         }
 
@@ -201,11 +202,9 @@ class InAppBillingManager(context: Context) {
                 .build()
         ) { billingResult, purchasesList ->
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                purchasesList
-                    .filter { it.purchaseState == Purchase.PurchaseState.PURCHASED && it.isAcknowledged }
-                    .flatMap { it.products }
-                    .mapNotNull { productId -> allProducts.find { it.productId == productId } }
-                    .let { purchasedProducts.addAll(it) }
+                purchasedItems.addAll(
+                    purchasesList.filter { it.purchaseState == Purchase.PurchaseState.PURCHASED && it.isAcknowledged }
+                )
             }
             subsQueryCompleted = true
             checkCompletion()
@@ -217,11 +216,9 @@ class InAppBillingManager(context: Context) {
                 .build()
         ) { billingResult, purchasesList ->
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                purchasesList
-                    .filter { it.purchaseState == Purchase.PurchaseState.PURCHASED && it.isAcknowledged }
-                    .flatMap { it.products }
-                    .mapNotNull { productId -> allProducts.find { it.productId == productId } }
-                    .let { purchasedProducts.addAll(it) }
+                purchasedItems.addAll(
+                    purchasesList.filter { it.purchaseState == Purchase.PurchaseState.PURCHASED && it.isAcknowledged }
+                )
             }
             inAppQueryCompleted = true
             checkCompletion()

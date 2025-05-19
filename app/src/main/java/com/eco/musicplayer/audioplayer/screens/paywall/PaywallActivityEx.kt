@@ -21,6 +21,7 @@ import com.eco.musicplayer.audioplayer.constants.PRODUCT_ID_YEAR
 import com.eco.musicplayer.audioplayer.music.R
 
 fun PaywallActivity.loadSubsPolicyContent() {
+    Log.d("TAG", "loadSubsPolicyContent:1111")
     setupLimitedVersionText()
     setupTermsAndPrivacyText()
 }
@@ -34,13 +35,6 @@ fun PaywallActivity.loadPriceUI(products: List<BaseProductDetails>) {
         updateItem()
     }
     setupPlanTexts(detailsMap)
-}
-
-fun PaywallActivity.updatePurchases(purchases: List<BaseProductDetails>) {
-    purchasedProducts.clear() // Xóa danh sách cũ để tránh trùng lặp
-    purchases.forEach { purchasedProducts.add(it.productId) }
-    updatePlanSelectionBasedOnPurchases()
-    updateItem() // Gọi để cập nhật UI sau khi thay đổi purchasedProducts
 }
 
 fun PaywallActivity.setOnClicks() {
@@ -244,7 +238,8 @@ private fun PaywallActivity.updateSelectedPlanUi() {
         2 to binding.btnYearly,
         3 to binding.btnLifetime
     ).forEach { (position, button) ->
-        if (purchasedProducts.contains(detailsMap[position]?.productId)) return@forEach
+        Log.d("TAG", "updateSelectedPlanUi: $position")
+        if (purchasedProducts.contains(detailsMap[position]?.productId)) return
         val isSelected = position == selectPosition
         button.updateSelection(isSelected)
         if (isSelected) {
@@ -309,7 +304,7 @@ private fun PaywallActivity.updatePurchasedBadge(productId: String) {
     }
 }
 
-private fun PaywallActivity.getSubscriptionLevel(productId: String) = when (productId) {
+private fun getSubscriptionLevel(productId: String) = when (productId) {
     PRODUCT_ID_MONTH -> 1
     PRODUCT_ID_YEAR -> 2
     PRODUCT_ID_LIFETIME -> 3

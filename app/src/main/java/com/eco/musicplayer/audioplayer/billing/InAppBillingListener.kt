@@ -8,7 +8,7 @@ interface InAppBillingListener {
 
     fun onStartConnectToGooglePlay()
     fun onProductsLoaded(products: List<BaseProductDetails>)
-    fun onPurchasesLoaded(purchases: List<BaseProductDetails>)
+    fun onPurchasesLoaded(purchases: List<Purchase>)
     fun onInAppBillingError(message: String)
 
     fun onStartAcknowledgePurchase()

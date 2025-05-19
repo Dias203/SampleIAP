@@ -35,7 +35,7 @@ fun PaywallActivity.createInAppBillingListener() = object : InAppBillingListener
         loadPriceUI(products)
     }
 
-    override fun onPurchasesLoaded(purchases: List<BaseProductDetails>) {
+    override fun onPurchasesLoaded(purchases: List<Purchase>) {
         Log.d("TAG", "onPurchasesLoaded: 3")
         if (purchases.isNotEmpty()) {
             updatePurchases(purchases)
@@ -63,7 +63,8 @@ fun PaywallActivity.createInAppBillingListener() = object : InAppBillingListener
                 this@createInAppBillingListener,
                 purchasedProducts
             )
-            updatePurchases(listOfNotNull(detailsMap.values.find { it?.productId == productId }))
+            updatePlanSelectionBasedOnPurchases()
+            updateItem()
             showToast("Purchase successful: $productId")
         }
     }
@@ -77,9 +78,13 @@ fun PaywallActivity.createInAppBillingListener() = object : InAppBillingListener
     }
 
 
-    fun PaywallActivity.updatePurchases(purchases: List<BaseProductDetails>) {
+    fun PaywallActivity.updatePurchases(purchases: List<Purchase>) {
         purchasedProducts.clear()
-        purchases.forEach { purchasedProducts.add(it.productId) }
+        purchases.forEach { purchase ->
+            purchase.products.forEach { productId ->
+                purchasedProducts.add(productId)
+            }
+        }
 
         // Cập nhật SharedPreferences
         PurchasePrefsHelper.savePurchasedProducts(this, purchasedProducts)
