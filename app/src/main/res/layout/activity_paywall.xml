@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_paywall">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.PaywallActivity">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/btnClose"
+            android:layout_width="@dimen/_28sdp"
+            android:layout_height="@dimen/_28sdp"
+            android:layout_marginTop="@dimen/_11sdp"
+            android:layout_marginEnd="@dimen/_13sdp"
+            android:padding="@dimen/_3sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_delete" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottieShow"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/_16sdp"
+            app:layout_constraintDimensionRatio="360:211"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/paywall_rcv" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/appName"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="@dimen/_12sdp"
+            android:layout_marginTop="@dimen/_24sdp"
+            app:layout_constraintDimensionRatio="210:25"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/lottieShow"
+            app:layout_constraintWidth_percent="0.6"
+            app:srcCompat="@drawable/app_name" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginEnd="@dimen/_13sdp"
+            android:fontFamily="@font/roboto_medium"
+            android:maxLines="1"
+            android:paddingVertical="@dimen/_2sdp"
+            android:paddingEnd="@dimen/_10sdp"
+            android:text="Unlock all pro features. No ads."
+            android:textSize="@dimen/_16sdp"
+            app:autoSizeMaxTextSize="@dimen/_16sdp"
+            app:autoSizeMinTextSize="@dimen/_9sdp"
+            app:autoSizeTextType="uniform"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/appName"
+            app:layout_constraintTop_toBottomOf="@id/appName"
+            tools:ignore="HardcodedText,RtlSymmetry" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/btnMonthly"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:layout_marginEnd="@dimen/_13sdp"
+            android:background="@drawable/bg_selected_paywall"
+            android:paddingHorizontal="@dimen/_8sdp"
+            android:paddingVertical="@dimen/_6sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/tv1"
+            app:layout_constraintTop_toBottomOf="@id/tv1"
+            app:layout_constraintWidth_percent="0.93">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/radioButton1"
+                android:layout_width="@dimen/_16sdp"
+                android:layout_height="@dimen/_16sdp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_checked" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv2"
+                android:layout_width="@dimen/_100sdp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_9sdp"
+                android:fontFamily="@font/roboto_medium"
+                android:includeFontPadding="false"
+                android:maxLines="2"
+                tools:text="Vip Month"
+                android:paddingVertical="@dimen/_2sdp"
+                android:textSize="@dimen/_14sdp"
+                app:autoSizeMaxTextSize="@dimen/_14sdp"
+                app:autoSizeMinTextSize="@dimen/_6sdp"
+                app:autoSizeTextType="uniform"
+                app:layout_constraintBottom_toBottomOf="@+id/tv4"
+                app:layout_constraintEnd_toStartOf="@id/tv4"
+                app:layout_constraintStart_toEndOf="@id/radioButton1"
+                app:layout_constraintTop_toTopOf="@id/tv4"
+                android:layout_weight="1"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_regular"
+                android:includeFontPadding="false"
+                android:gravity="center_vertical"
+                android:maxLines="2"
+                android:paddingVertical="@dimen/_2sdp"
+                android:textSize="@dimen/_10sdp"
+                app:autoSizeMaxTextSize="@dimen/_10sdp"
+                app:autoSizeMinTextSize="@dimen/_6sdp"
+                app:autoSizeTextType="uniform"
+                app:layout_constraintBottom_toBottomOf="@+id/tv5"
+                app:layout_constraintEnd_toStartOf="@id/tv5"
+                app:layout_constraintStart_toStartOf="@id/tv2"
+                app:layout_constraintTop_toTopOf="@+id/tv5"
+                tools:text="Auto-renew. Cancel anytime Auto-renew. Cancel anytimeAuto-renew. Cancel anytimeAuto-renew. Cancel anytime" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:fontFamily="@font/roboto_medium"
+                android:gravity="end|center_vertical"
+                android:includeFontPadding="false"
+                android:maxLines="1"
+                android:paddingVertical="@dimen/_2sdp"
+                android:textSize="@dimen/_14sdp"
+                app:autoSizeMaxTextSize="@dimen/_16sdp"
+                app:autoSizeMinTextSize="@dimen/_9sdp"
+                app:autoSizeTextType="uniform"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tv2"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="28,080đ"
+                android:layout_weight="2"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv5"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/_4sdp"
+                android:gravity="end"
+                android:includeFontPadding="false"
+                android:maxLines="2"
+                android:paddingVertical="@dimen/_2sdp"
+                tools:text="per month"
+                android:textSize="@dimen/_10sdp"
+                android:textStyle="italic"
+                app:autoSizeMaxTextSize="@dimen/_10sdp"
+                app:autoSizeMinTextSize="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_4sdp"
+                app:autoSizeTextType="uniform"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@id/tv4"
+                app:layout_constraintStart_toEndOf="@+id/tv3"
+                app:layout_constraintTop_toBottomOf="@id/tv4"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/bestDeal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:background="@drawable/bg_best_deal"
+            android:drawableStart="@drawable/ic_bolt"
+            android:fontFamily="@font/roboto_bold"
+            android:paddingHorizontal="@dimen/_6sdp"
+            android:paddingVertical="@dimen/_3sdp"
+            android:text="BEST DEAL"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_8sdp"
+            app:layout_constraintBottom_toTopOf="@id/btnMonthly"
+            app:layout_constraintEnd_toEndOf="@id/btnMonthly"
+            app:layout_constraintTop_toTopOf="@id/btnMonthly"
+            tools:ignore="HardcodedText" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/btnYearly"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_9sdp"
+            android:background="@drawable/bg_unselected_paywall"
+            android:paddingHorizontal="@dimen/_8sdp"
+            android:paddingVertical="@dimen/_6sdp"
+            app:layout_constraintEnd_toEndOf="@id/btnMonthly"
+            app:layout_constraintStart_toStartOf="@id/btnMonthly"
+            app:layout_constraintTop_toBottomOf="@id/btnMonthly"
+            app:layout_constraintWidth_percent="0.93">
+
+            <include layout="@layout/item_paywall" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/bestDeal2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:background="@drawable/bg_best_deal"
+            android:drawableStart="@drawable/ic_bolt"
+            android:fontFamily="@font/roboto_bold"
+            android:paddingHorizontal="@dimen/_6sdp"
+            android:paddingVertical="@dimen/_3sdp"
+            tools:text="BEST DEAL"
+            android:visibility="gone"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_8sdp"
+            app:layout_constraintTop_toTopOf="@id/btnYearly"
+            app:layout_constraintBottom_toTopOf="@id/btnYearly"
+            app:layout_constraintEnd_toEndOf="@id/btnYearly"
+            tools:ignore="HardcodedText" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/btnLifetime"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_9sdp"
+            android:background="@drawable/bg_unselected_paywall"
+            android:paddingHorizontal="@dimen/_8sdp"
+            android:paddingVertical="@dimen/_6sdp"
+            app:layout_constraintEnd_toEndOf="@id/btnYearly"
+            app:layout_constraintStart_toStartOf="@id/btnYearly"
+            app:layout_constraintTop_toBottomOf="@id/btnYearly"
+            app:layout_constraintWidth_percent="0.93">
+
+            <include layout="@layout/item_paywall" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/bestDeal3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:background="@drawable/bg_best_deal"
+            android:drawableStart="@drawable/ic_bolt"
+            android:fontFamily="@font/roboto_bold"
+            android:paddingHorizontal="@dimen/_6sdp"
+            android:paddingVertical="@dimen/_3sdp"
+            tools:text="BEST DEAL"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_8sdp"
+            app:layout_constraintTop_toTopOf="@id/btnLifetime"
+            app:layout_constraintBottom_toTopOf="@id/btnLifetime"
+            app:layout_constraintEnd_toEndOf="@id/btnLifetime"
+            android:visibility="gone"
+            tools:ignore="HardcodedText" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvSub"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:fontFamily="@font/roboto_regular"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:paddingHorizontal="@dimen/_6sdp"
+            android:paddingVertical="@dimen/_3sdp"
+            tools:text="or Use limited version"
+            android:textColor="#9E9E9E"
+            android:visibility="gone"
+            android:textSize="@dimen/_14sdp"
+            app:autoSizeMaxTextSize="@dimen/_12sdp"
+            app:autoSizeMinTextSize="@dimen/_6sdp"
+            app:autoSizeTextType="uniform"
+            app:layout_constraintEnd_toEndOf="@id/btnStartFreeTrial"
+            app:layout_constraintStart_toStartOf="@id/btnStartFreeTrial"
+            app:layout_constraintTop_toBottomOf="@id/btnLifetime"
+            tools:ignore="HardcodedText" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnStartFreeTrial"
+            style="@android:style/Widget.Button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:background="@drawable/bg_claim_offer"
+            android:fontFamily="@font/roboto_medium"
+            android:includeFontPadding="false"
+            android:paddingHorizontal="@dimen/_6sdp"
+            android:paddingVertical="@dimen/_14sdp"
+            android:text="Start Free Trial"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_18sdp"
+            app:layout_constraintEnd_toEndOf="@id/btnLifetime"
+            app:layout_constraintStart_toStartOf="@id/btnLifetime"
+            app:layout_constraintTop_toBottomOf="@id/tvSub"
+            tools:ignore="HardcodedText" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv6"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:fontFamily="@font/roboto_regular"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:paddingHorizontal="@dimen/_6sdp"
+            android:paddingVertical="@dimen/_3sdp"
+            android:text="or Use limited version"
+            android:textColor="#C81212"
+            android:textSize="@dimen/_14sdp"
+            app:autoSizeMaxTextSize="@dimen/_12sdp"
+            app:autoSizeMinTextSize="@dimen/_6sdp"
+            app:autoSizeTextType="uniform"
+            app:layout_constraintEnd_toEndOf="@id/btnStartFreeTrial"
+            app:layout_constraintStart_toStartOf="@id/btnStartFreeTrial"
+            app:layout_constraintTop_toBottomOf="@id/btnStartFreeTrial"
+            tools:ignore="HardcodedText" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv7"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_13sdp"
+            android:layout_marginBottom="@dimen/_13sdp"
+            android:fontFamily="@font/roboto_regular"
+            android:includeFontPadding="false"
+            android:paddingVertical="@dimen/_4sdp"
+            android:text="@string/full_text"
+            android:textAlignment="viewStart"
+            android:textColor="#9E9E9E"
+            android:textSize="@dimen/_10sdp"
+            app:layout_constraintEnd_toEndOf="@id/tv6"
+            app:layout_constraintStart_toStartOf="@id/tv6"
+            app:layout_constraintTop_toBottomOf="@id/tv6" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

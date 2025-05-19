@@ -1,0 +1,50 @@
+<resources>
+    <string name="app_name">DucDuongTrainningEco</string>
+    <string name="app">S2Note</string>
+    <string name="text_remove_ads">Remove Ads for the\nBest Experience</string>
+    <string name="current_price">$27.99</string>
+    <string name="old_price">$32.99</string>
+    <string name="policy">By subscribing, you agree to our Privacy Policy</string>
+    <string name="life_time">Lifetime</string>
+    <string name="monthly">Monthly</string>
+    <string name="remove_ads">Remove Ads for the</string>
+    <string name="best_exp">Best Experience</string>
+    <string name="seven_day">7-Day</string>
+    <string name="best_offer">Best Offer</string>
+    <string name="onetime_purchase">Onetime Purchase</string>
+    <string name="_continue">Continue</string>
+    <string name="full_text">
+    By continuing you agree to our Terms and Privacy policies:\n
+    \t•Subscription gives you access to Vivishow\'s premium features, all ads will be removed.\n
+    \t•Subscription plans are automatically renewed and can be canceled anytime in Subscriptions on Google Play.\n
+    \t•You won’t be charged if subscription is canceled before trial period ends.\n
+    \t•Subscription is not required to use Vivishow.
+    </string>
+    <string name="black_friday_offer">Black Friday Offer!</string>
+    <string name="terms">Terms</string>
+    <string name="privacy_policies">Privacy policies</string>
+    <string name="using_limited">hoặc Sử dụng phiên bản giới hạn</string>
+    <string name="title">3-day free trial</string>
+    <string name="des_title">Auto-renew. Cancel anytime</string>
+    <string name="period">per week after trial</string>
+
+    <!--=============================================================================================-->
+    <string name="text_sub">Free cho %s đầu</string>
+    <string name="text_extend">Gia hạn sau</string>
+    <string name="text_day">ngày</string>
+    <string name="text_week">tuần</string>
+    <string name="text_month">tháng</string>
+    <string name="text_year">năm</string>
+    <string name="sub_week">Gói tuần</string>
+    <string name="sub_month">Gói tháng</string>
+    <string name="sub_year">Gói năm</string>
+    <string name="life_time_vie">Trọn đời</string>
+    <string name="not_supported">Không hỗ trợ</string>
+    <string name="unclear">Không rõ</string>
+    <string name="na_value">N/A</string>
+    <string name="onetime_purchases">Thanh toán một lần: %s</string>
+    <string name="unknown_price">Giá không xác định</string>
+    <string name="purchased">Đã mua</string>
+    <string name="upgrade">Nâng cấp gói</string>
+    <string name="free_trial">Bắt đầu dùng thử miễn phí</string>
+</resources>
