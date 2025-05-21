@@ -47,5 +47,6 @@
     <string name="purchased">Đã mua</string>
     <string name="buy">Mua</string>
     <string name="upgrade">Nâng cấp gói</string>
+    <string name="downgrade">Hạ cấp gói</string>
     <string name="start_free_trial">Bắt đầu dùng thử miễn phí</string>
 </resources>

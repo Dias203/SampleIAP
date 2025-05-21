@@ -13,6 +13,8 @@ import com.eco.musicplayer.audioplayer.constants.PRODUCT_ID_MONTH
 import com.eco.musicplayer.audioplayer.constants.PRODUCT_ID_YEAR
 import com.eco.musicplayer.audioplayer.helpers.PurchasePrefsHelper
 
+const val TAG = "DUC"
+
 fun PaywallActivity.initBilling() {
     inAppBillingManager.listener = createInAppBillingListener()
     inAppBillingManager.productInfoList = listOf(
@@ -20,23 +22,23 @@ fun PaywallActivity.initBilling() {
         ProductInfo(SUBS, PRODUCT_ID_YEAR),
         ProductInfo(IN_APP, PRODUCT_ID_LIFETIME)
     )
-    Log.d("TAG", "initBilling: 0")
+    Log.d(TAG, "initBilling: 0")
     inAppBillingManager.startConnectToGooglePlay()
 }
 
 fun PaywallActivity.createInAppBillingListener() = object : InAppBillingListener {
     override fun onStartConnectToGooglePlay() {
-        Log.d("TAG", "onStartConnectToGooglePlay: 1")
+        Log.d(TAG, "onStartConnectToGooglePlay: 1")
         showToast("Connecting to Google Play...")
     }
 
     override fun onProductsLoaded(products: List<BaseProductDetails>) {
-        Log.d("TAG", "onProductsLoaded: 2")
+        Log.d(TAG, "onProductsLoaded: 2")
         loadPriceUI(products)
     }
 
     override fun onPurchasesLoaded(purchases: List<Purchase>) {
-        Log.d("TAG", "onPurchasesLoaded: 3")
+        Log.d(TAG, "onPurchasesLoaded: 3")
         if (purchases.isNotEmpty()) {
             updatePurchases(purchases)
         }
@@ -59,6 +61,7 @@ fun PaywallActivity.createInAppBillingListener() = object : InAppBillingListener
         purchase.products.firstOrNull()?.let { productId ->
             purchasedProducts.add(productId)
             // Lưu vào SharedPreferences
+            Log.i("TAG", "onPurchaseAcknowledged: luu vao day")
             PurchasePrefsHelper.savePurchasedProducts(
                 this@createInAppBillingListener,
                 purchasedProducts
@@ -79,10 +82,11 @@ fun PaywallActivity.createInAppBillingListener() = object : InAppBillingListener
 
 
     fun PaywallActivity.updatePurchases(purchases: List<Purchase>) {
-        purchasedProducts.clear()
         purchases.forEach { purchase ->
             purchase.products.forEach { productId ->
                 purchasedProducts.add(productId)
+                Log.i("TAG", "updatePurchases: $productId")
+                Log.i("TAG", "updatePurchases: ${purchasedProducts.size}")
             }
         }
 

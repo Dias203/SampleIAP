@@ -15,5 +15,4 @@ interface InAppBillingListener {
     fun onPurchaseAcknowledged(productInfo: ProductInfo, purchase: Purchase)
     fun onUserCancelPurchase()
     fun onPurchaseError(message: String, productInfo: ProductInfo)
-
 }

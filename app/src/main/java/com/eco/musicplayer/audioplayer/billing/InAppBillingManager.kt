@@ -9,6 +9,8 @@ import android.widget.Toast
 import com.android.billingclient.api.*
 import com.eco.musicplayer.audioplayer.billing.model.*
 import com.eco.musicplayer.audioplayer.constants.ConstantsProductID
+import com.eco.musicplayer.audioplayer.constants.PRODUCT_ID_LIFETIME
+import com.eco.musicplayer.audioplayer.constants.PRODUCT_ID_MONTH
 
 class InAppBillingManager(context: Context) {
 
@@ -219,9 +221,44 @@ class InAppBillingManager(context: Context) {
                 purchasedItems.addAll(
                     purchasesList.filter { it.purchaseState == Purchase.PurchaseState.PURCHASED && it.isAcknowledged }
                 )
+                purchasesList.forEach { purchase ->
+                    if(purchase.products.contains(PRODUCT_ID_LIFETIME)){
+                        consumeLifetimeProduct()
+                    }
+                }
             }
             inAppQueryCompleted = true
             checkCompletion()
+
+        }
+    }
+
+    // Tiêu thụ
+    fun consumeLifetimeProduct() {
+        if (!billingClient.isReady) {
+            Log.e(TAG, "Billing client not ready")
+            return
+        }
+
+        billingClient.queryPurchasesAsync(
+            QueryPurchasesParams.newBuilder()
+                .setProductType(IN_APP)
+                .build()
+        ) { billingResult, purchasesList ->
+            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                val lifetimePurchase = purchasesList.find { purchase ->
+                    purchase.products.any { it == PRODUCT_ID_LIFETIME }
+                }
+
+                if (lifetimePurchase != null) {
+                    Log.d(TAG, "Found lifetime purchase, consuming: ${lifetimePurchase.purchaseToken}")
+                    consumePurchase(lifetimePurchase)
+                } else {
+                    Log.d(TAG, "No lifetime purchase found to consume")
+                }
+            } else {
+                Log.e(TAG, "Failed to query purchases: ${billingResult.debugMessage}")
+            }
         }
     }
 
@@ -370,6 +407,20 @@ class InAppBillingManager(context: Context) {
         billingClient.acknowledgePurchase(params) { result ->
             if (result.responseCode != BillingClient.BillingResponseCode.OK) {
                 listener?.onPurchaseError("Failed to acknowledge purchase: ${result.debugMessage}", ProductInfo())
+            }
+        }
+    }
+
+    private fun consumePurchase(purchase: Purchase) {
+        val consumeParams = ConsumeParams.newBuilder()
+            .setPurchaseToken(purchase.purchaseToken)
+            .build()
+
+        billingClient.consumeAsync(consumeParams) { billingResult, _ ->
+            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                Log.i(TAG, "Đã tiêu thụ purchase: ${purchase.purchaseToken}")
+            } else {
+                Log.i(TAG, "Lỗi khi tiêu thụ: ${billingResult.debugMessage}")
             }
         }
     }
