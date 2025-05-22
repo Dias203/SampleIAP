@@ -305,12 +305,18 @@ fun PaywallActivity.updatePlanSelectionBasedOnPurchases() {
     )
 
     if (purchasedProducts.contains(PRODUCT_ID_LIFETIME)) {
+        // Disable tất cả các nút (gói lifetime, tháng, năm) khi đã mua gói lifetime
         buttons.forEach { (button, id) ->
-            if (id == PRODUCT_ID_LIFETIME) button.disablePurchasedButton() else button.disablePurchasedButton()
+            button.disablePurchasedButton()
+            if (id == PRODUCT_ID_LIFETIME) {
+                updatePurchasedBadge(id)
+            }
         }
         binding.btnStartFreeTrial.apply {
-            isEnabled = false
-            text = getString(R.string.purchased)
+            text = getString(R.string._continue)
+            setOnClickListener {
+                showToast("Open Activity 2")
+            }
         }
         Log.d(
             "TAG",
@@ -390,6 +396,7 @@ fun PaywallActivity.updatePlanSelectionBasedOnPurchases() {
         "updatePlanSelectionBasedOnPurchases: Button text set to ${binding.btnStartFreeTrial.text}, hasFreeTrial=${hasFreeTrial()}, selectPosition=$selectPosition"
     )
 }
+
 
 // Hàm xác định text cho btnStartFreeTrial
 private fun PaywallActivity.getButtonText(currentSubscription: String?): String {

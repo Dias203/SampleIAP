@@ -66,6 +66,7 @@ import com.eco.musicplayer.audioplayer.billing.model.BaseProductDetails
 import com.eco.musicplayer.audioplayer.constants.PRODUCT_ID_LIFETIME
 import com.eco.musicplayer.audioplayer.constants.PRODUCT_ID_MONTH
 import com.eco.musicplayer.audioplayer.constants.PRODUCT_ID_YEAR
+import com.eco.musicplayer.audioplayer.helpers.PurchasePrefsHelper
 import com.eco.musicplayer.audioplayer.music.databinding.ActivityPaywallBinding
 
 class PaywallActivity : AppCompatActivity() {
@@ -90,7 +91,7 @@ class PaywallActivity : AppCompatActivity() {
         loadSubsPolicyContent()
         setOnClicks()
         initBilling()
-        //inAppBillingManager.consumeLifetimeProduct()
+        inAppBillingManager.consumeLifetimeProduct()
 
         savedInstanceState?.let {
             selectPosition = it.getInt("selectPosition", 0)

@@ -60,6 +60,11 @@ fun PaywallActivity.createInAppBillingListener() = object : InAppBillingListener
     override fun onPurchaseAcknowledged(productInfo: ProductInfo, purchase: Purchase) {
         purchase.products.firstOrNull()?.let { productId ->
             purchasedProducts.add(productId)
+            Log.i(TAG, "onPurchaseAcknowledged: PurchasedProducts MutableSet<String> Size: ${purchasedProducts.size}")
+            Log.i(TAG, "onPurchaseAcknowledged: purchase MutableList<Purchase> Size: ${purchase.products.size}")
+            purchasedProducts.forEach {
+                Log.i(TAG, "onPurchaseAcknowledged: $it")
+            }
             // Lưu vào SharedPreferences
             Log.i("TAG", "onPurchaseAcknowledged: luu vao day")
             PurchasePrefsHelper.savePurchasedProducts(
@@ -67,7 +72,9 @@ fun PaywallActivity.createInAppBillingListener() = object : InAppBillingListener
                 purchasedProducts
             )
             updatePlanSelectionBasedOnPurchases()
-            updateItem()
+            if(productId != PRODUCT_ID_LIFETIME) {
+                updateItem()
+            }
             showToast("Purchase successful: $productId")
         }
     }
