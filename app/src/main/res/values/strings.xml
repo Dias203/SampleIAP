@@ -43,9 +43,11 @@
     <string name="unclear">Không rõ</string>
     <string name="na_value">N/A</string>
     <string name="onetime_purchases">Thanh toán một lần: %s</string>
+    <string name="onetime_purchases2">Thanh toán một lần</string>
     <string name="unknown_price">Giá không xác định</string>
     <string name="purchased">Đã mua</string>
     <string name="buy">Đăng ký</string>
+    <string name="free">Miễn phí %s</string>
     <string name="upgrade">Nâng cấp gói</string>
     <string name="continue_vie">Tiếp tục</string>
     <string name="downgrade">Hạ cấp gói</string>

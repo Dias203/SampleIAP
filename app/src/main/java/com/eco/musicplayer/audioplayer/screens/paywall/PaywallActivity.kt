@@ -89,7 +89,6 @@ class PaywallActivity : AppCompatActivity() {
 
 
         //PurchasePrefsHelper.clearPurchasedProducts(this)
-        //purchasedProducts.addAll(PurchasePrefsHelper.getPurchasedProducts(this))
 
         updatePlanSelectionBasedOnPurchases()
 
