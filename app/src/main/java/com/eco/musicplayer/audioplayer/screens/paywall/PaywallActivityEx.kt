@@ -21,6 +21,7 @@ import com.eco.musicplayer.audioplayer.constants.PRODUCT_ID_YEAR
 import com.eco.musicplayer.audioplayer.helpers.PurchasePrefsHelper
 import com.eco.musicplayer.audioplayer.music.R
 
+private const val TAG = "PaywallActivityEx"
 fun PaywallActivity.loadSubsPolicyContent() {
     Log.d("TAG", "loadSubsPolicyContent:1111")
     setupLimitedVersionText()
@@ -28,9 +29,11 @@ fun PaywallActivity.loadSubsPolicyContent() {
 }
 
 fun PaywallActivity.loadPriceUI(products: List<BaseProductDetails>) {
-    detailsMap[1] = products.find { it.productId == item1ProductId }
-    detailsMap[2] = products.find { it.productId == item2ProductId }
-    detailsMap[3] = products.find { it.productId == item3ProductId }
+    detailsMap.apply {
+        put(1, products.find { it.productId == item1ProductId })
+        put(2, products.find { it.productId == item2ProductId })
+        put(3, products.find { it.productId == item3ProductId })
+    }
     Log.d("TAG", "loadPriceUI: detailsMap=$detailsMap, purchasedProducts=$purchasedProducts")
     if (detailsMap.isNotEmpty() && selectPosition == 0 && purchasedProducts.isEmpty()) {
         selectPosition = 1
@@ -42,32 +45,22 @@ fun PaywallActivity.loadPriceUI(products: List<BaseProductDetails>) {
 }
 
 fun PaywallActivity.setOnClicks() {
-    binding.btnMonthly.setOnClickListener {
-        selectPosition = 1
-        updateItem()
-        updatePlanSelectionBasedOnPurchases()
-    }
-    binding.btnYearly.setOnClickListener {
-        selectPosition = 2
-        updateItem()
-        updatePlanSelectionBasedOnPurchases()
-    }
-    binding.btnLifetime.setOnClickListener {
-        selectPosition = 3
-        updateItem()
-        updatePlanSelectionBasedOnPurchases()
-    }
-    binding.btnStartFreeTrial.setOnClickListener {
-        Log.d("TAG", "setOnClicks: btnStartFreeTrial clicked")
-        detailsMap[selectPosition]?.let { product ->
-            val currentSubscription =
-                purchasedProducts.firstOrNull { it in ConstantsProductID.subsListProduct }
-            if (currentSubscription != null && product.productId in ConstantsProductID.subsListProduct) {
-                // Gọi nâng cấp nếu đang có gói đăng ký
-                inAppBillingManager.launchBillingFlowForUpgrade(this, product, currentSubscription)
-            } else {
-                // Gọi mua mới nếu chưa có gói hoặc chọn gói lifetime
-                inAppBillingManager.launchPurchase(this, product)
+    with(binding) {
+        btnMonthly.setOnClickListener { selectPosition = 1; updateItem(); updatePlanSelectionBasedOnPurchases() }
+        btnYearly.setOnClickListener {selectPosition = 2; updateItem(); updatePlanSelectionBasedOnPurchases() }
+        btnLifetime.setOnClickListener { selectPosition = 3;updateItem();updatePlanSelectionBasedOnPurchases() }
+        btnStartFreeTrial.setOnClickListener {
+            Log.d(TAG, "setOnClicks: btnStartFreeTrial clicked")
+            detailsMap[selectPosition]?.let { product ->
+                val currentSubscription =
+                    purchasedProducts.firstOrNull { it in ConstantsProductID.subsListProduct }
+                if (currentSubscription != null && product.productId in ConstantsProductID.subsListProduct) {
+                    // Gọi nâng cấp nếu đang có gói đăng ký
+                    inAppBillingManager.launchBillingFlowForUpgrade(this@setOnClicks, product, currentSubscription)
+                } else {
+                    // Gọi mua mới nếu chưa có gói hoặc chọn gói lifetime
+                    inAppBillingManager.launchPurchase(this@setOnClicks, product)
+                }
             }
         }
     }
@@ -169,7 +162,12 @@ private fun PaywallActivity.setupSkuDetails(
     val skuDetails = plan.skuDetails
     when {
         skuDetails.freeTrialPeriod.isNotEmpty() -> {
-            tv3.setVisibleText(getString(R.string.free, parsePeriodToReadableText(skuDetails.freeTrialPeriod)))
+            tv3.setVisibleText(
+                getString(
+                    R.string.free,
+                    parsePeriodToReadableText(skuDetails.freeTrialPeriod)
+                )
+            )
             tv4.text = skuDetails.price
             tv5.text = parsePeriodToReadableText(skuDetails.subscriptionPeriod)
         }
@@ -278,13 +276,13 @@ private fun PaywallActivity.isSkuDetails(plan: SkuDetailsWrapper, productId: Str
 }
 
 private fun PaywallActivity.updateSelectedPlanUi() {
-    if(PurchasePrefsHelper.getPurchasedProducts(this).contains(PRODUCT_ID_LIFETIME)) return
+    if (PurchasePrefsHelper.getPurchasedProducts(this).contains(PRODUCT_ID_LIFETIME)) return
     listOf(
         1 to binding.btnMonthly,
         2 to binding.btnYearly,
         3 to binding.btnLifetime
     ).forEach { (position, button) ->
-        Log.d("TAG", "updateSelectedPlanUi: $position")
+        Log.d(TAG, "updateSelectedPlanUi: $position")
         if (purchasedProducts.contains(detailsMap[position]?.productId)) return
         val isSelected = position == selectPosition
         button.updateSelection(isSelected)
@@ -325,10 +323,7 @@ fun PaywallActivity.updatePlanSelectionBasedOnPurchases() {
 
     // Cập nhật text cho btnStartFreeTrial dựa trên gói được chọn
     binding.btnStartFreeTrial.text = getButtonText(currentSubscription)
-    Log.d(
-        "TAG",
-        "updatePlanSelectionBasedOnPurchases: Button text set to ${binding.btnStartFreeTrial.text}, hasFreeTrial=${hasFreeTrial()}, selectPosition=$selectPosition"
-    )
+    Log.d(TAG, "updatePlanSelectionBasedOnPurchases: Button text set to ${binding.btnStartFreeTrial.text}, hasFreeTrial=${hasFreeTrial()}, selectPosition=$selectPosition")
 }
 
 // Nếu đã mua gói Lifetime → disable toàn bộ các nút và cập nhật badge + text nút bắt đầu
@@ -350,7 +345,7 @@ private fun PaywallActivity.handleLifetimePurchase(buttons: List<Pair<ViewGroup,
             }
         }
 
-        Log.d("TAG", "updatePlanSelectionBasedOnPurchases: Lifetime purchased, button text set to Đã mua")
+        Log.d(TAG, "updatePlanSelectionBasedOnPurchases: Lifetime purchased, button text set to Đã mua")
         return true
     }
     return false
@@ -414,7 +409,7 @@ private fun PaywallActivity.handleDefaultSelectionIfNeeded(
     hasActiveSubscription: Boolean,
     anyButtonSelected: Boolean
 ) {
-    Log.i("TAG", "handleDefaultSelectionIfNeeded: ")
+    Log.i(TAG, "handleDefaultSelectionIfNeeded: ")
     if (!anyButtonSelected && selectPosition != 0) {
         // Tìm gói đầu tiên chưa mua và không bị disable (trừ lifetime nếu có subscription)
         val firstAvailablePosition = buttons.indexOfFirst { (_, productId) ->
@@ -436,7 +431,8 @@ private fun PaywallActivity.handleDefaultSelectionIfNeeded(
             // Cập nhật lại UI selected button
             buttons.forEachIndexed { index, (button, productId) ->
                 if (!purchasedProducts.contains(productId) &&
-                    !(productId == PRODUCT_ID_LIFETIME && hasActiveSubscription)) {
+                    !(productId == PRODUCT_ID_LIFETIME && hasActiveSubscription)
+                ) {
                     button.updateSelection(index + 1 == selectPosition)
                 }
             }
@@ -445,22 +441,20 @@ private fun PaywallActivity.handleDefaultSelectionIfNeeded(
 }
 
 
-
 // Hàm xác định text cho btnStartFreeTrial
 private fun PaywallActivity.getButtonText(currentSubscription: String?): String {
     val selectedProduct = detailsMap[selectPosition]?.productId
-    Log.d("TAG", "getButtonText: selectedProduct=$selectedProduct, currentSubscription=$currentSubscription"
-    )
+    Log.d(TAG, "getButtonText: selectedProduct=$selectedProduct, currentSubscription=$currentSubscription")
 
     // Nếu selectPosition không hợp lệ, trả về text mặc định
     if (selectedProduct == null || selectPosition == 0) {
-        Log.d("TAG", "getButtonText: Invalid selectPosition or no product selected, returning 'Mua'")
+        Log.d(TAG, "getButtonText: Invalid selectPosition or no product selected, returning 'Mua'")
         return getString(R.string.buy)
     }
 
     // Ưu tiên kiểm tra free trial trước
     if (hasFreeTrial()) {
-        Log.d("TAG", "getButtonText: Free trial detected for product $selectedProduct")
+        Log.d(TAG, "getButtonText: Free trial detected for product $selectedProduct")
         return getString(R.string.start_free_trial)
     }
 
@@ -479,7 +473,7 @@ private fun PaywallActivity.getButtonText(currentSubscription: String?): String 
 
 
     // Nếu không có subscription, hiển thị "Mua" cho cả lifetime và subscription không có free trial
-    Log.d("TAG", "getButtonText: No subscription, returning 'Mua' for product $selectedProduct")
+    Log.d(TAG, "getButtonText: No subscription, returning 'Mua' for product $selectedProduct")
     return getString(R.string.buy)
 }
 
@@ -487,7 +481,7 @@ private fun PaywallActivity.getButtonText(currentSubscription: String?): String 
 private fun PaywallActivity.hasFreeTrial(): Boolean {
     val plan = detailsMap[selectPosition]
     if (plan == null) {
-        Log.d("TAG", "hasFreeTrial: No plan found for selectPosition=$selectPosition")
+        Log.d(TAG, "hasFreeTrial: No plan found for selectPosition=$selectPosition")
         return false
     }
 
@@ -496,19 +490,13 @@ private fun PaywallActivity.hasFreeTrial(): Boolean {
             val hasFreeTrial = plan.productDetails.subscriptionOfferDetails
                 ?.firstOrNull()?.pricingPhases?.pricingPhaseList
                 ?.firstOrNull()?.priceAmountMicros == 0L
-            Log.d(
-                "TAG",
-                "hasFreeTrial: ProductDetailsWrapper, hasFreeTrial=$hasFreeTrial, productId=${plan.productId}"
-            )
+            Log.d(TAG, "hasFreeTrial: ProductDetailsWrapper, hasFreeTrial=$hasFreeTrial, productId=${plan.productId}")
             hasFreeTrial
         }
 
         is SkuDetailsWrapper -> {
             val hasFreeTrial = plan.skuDetails.freeTrialPeriod.isNotEmpty()
-            Log.d(
-                "TAG",
-                "hasFreeTrial: SkuDetailsWrapper, hasFreeTrial=$hasFreeTrial, productId=${plan.productId}"
-            )
+            Log.d(TAG, "hasFreeTrial: SkuDetailsWrapper, hasFreeTrial=$hasFreeTrial, productId=${plan.productId}")
             hasFreeTrial
         }
     }

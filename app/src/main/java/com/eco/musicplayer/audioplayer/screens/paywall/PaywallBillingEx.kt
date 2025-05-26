@@ -14,17 +14,19 @@ import com.eco.musicplayer.audioplayer.constants.PRODUCT_ID_WEEK
 import com.eco.musicplayer.audioplayer.constants.PRODUCT_ID_YEAR
 import com.eco.musicplayer.audioplayer.helpers.PurchasePrefsHelper
 
-const val TAG = "DUC"
+private const val TAG = "DUC"
 
 fun PaywallActivity.initBilling() {
-    inAppBillingManager.listener = createInAppBillingListener()
-    inAppBillingManager.productInfoList = listOf(
-        ProductInfo(SUBS, PRODUCT_ID_WEEK),
-        ProductInfo(SUBS, PRODUCT_ID_YEAR),
-        ProductInfo(IN_APP, PRODUCT_ID_LIFETIME)
-    )
-    Log.d(TAG, "initBilling: 0")
-    inAppBillingManager.startConnectToGooglePlay()
+    inAppBillingManager.apply {
+        listener = createInAppBillingListener()
+        productInfoList = listOf(
+            ProductInfo(SUBS, PRODUCT_ID_WEEK),
+            ProductInfo(SUBS, PRODUCT_ID_YEAR),
+            ProductInfo(IN_APP, PRODUCT_ID_LIFETIME)
+        )
+        Log.d(TAG, "initBilling: Starting connection to Google Play")
+        startConnectToGooglePlay()
+    }
 }
 
 fun PaywallActivity.createInAppBillingListener() = object : InAppBillingListener {
@@ -49,9 +51,10 @@ fun PaywallActivity.createInAppBillingListener() = object : InAppBillingListener
 
     override fun onInAppBillingError(message: String) {
         showToast("Billing error: $message")
-        // Nếu lỗi do mạng, dựa vào SharedPreferences
-        purchasedProducts.clear()
-        purchasedProducts.addAll(PurchasePrefsHelper.getPurchasedProducts(this@createInAppBillingListener))
+        purchasedProducts.apply {
+            clear()
+            addAll(PurchasePrefsHelper.getPurchasedProducts(this@createInAppBillingListener))
+        }
         updatePlanSelectionBasedOnPurchases()
         updateItem()
     }
