@@ -9,7 +9,8 @@ import com.eco.musicplayer.audioplayer.billing.model.ProductInfo
 import com.eco.musicplayer.audioplayer.billing.model.SUBS
 import com.eco.musicplayer.audioplayer.billing.model.IN_APP
 import com.eco.musicplayer.audioplayer.constants.PRODUCT_ID_LIFETIME
-import com.eco.musicplayer.audioplayer.constants.PRODUCT_ID_MONTH
+import com.eco.musicplayer.audioplayer.constants.PRODUCT_ID_WEEK
+import com.eco.musicplayer.audioplayer.constants.PRODUCT_ID_WEEK
 import com.eco.musicplayer.audioplayer.constants.PRODUCT_ID_YEAR
 import com.eco.musicplayer.audioplayer.helpers.PurchasePrefsHelper
 
@@ -18,7 +19,7 @@ const val TAG = "DUC"
 fun PaywallActivity.initBilling() {
     inAppBillingManager.listener = createInAppBillingListener()
     inAppBillingManager.productInfoList = listOf(
-        ProductInfo(SUBS, PRODUCT_ID_MONTH),
+        ProductInfo(SUBS, PRODUCT_ID_WEEK),
         ProductInfo(SUBS, PRODUCT_ID_YEAR),
         ProductInfo(IN_APP, PRODUCT_ID_LIFETIME)
     )
@@ -28,18 +29,31 @@ fun PaywallActivity.initBilling() {
 
 fun PaywallActivity.createInAppBillingListener() = object : InAppBillingListener {
     override fun onStartConnectToGooglePlay() {
-        Log.d(TAG, "onStartConnectToGooglePlay: 1")
         showToast("Connecting to Google Play...")
     }
 
+    /*override fun onProductsLoaded(products: List<BaseProductDetails>) {
+        PurchasePrefsHelper.savePurchasedProducts(this@createInAppBillingListener, purchasedProducts)
+        if(purchasedProducts.isNotEmpty()) {
+            Log.i("TAG", "onProductsLoaded: ${purchasedProducts.size}")
+            purchasedProducts.addAll(PurchasePrefsHelper.getPurchasedProducts(this@createInAppBillingListener))
+            loadPriceUI(products)
+            updatePlanSelectionBasedOnPurchases()
+        } else {
+            Log.i("TAG", "onProductsLoaded: purchasedProducts isEmpty")
+            loadPriceUI(products)
+        }
+    }*/
     override fun onProductsLoaded(products: List<BaseProductDetails>) {
-        Log.d(TAG, "onProductsLoaded: 2")
         loadPriceUI(products)
+        updatePlanSelectionBasedOnPurchases()
     }
 
     override fun onPurchasesLoaded(purchases: List<Purchase>) {
-        Log.d(TAG, "onPurchasesLoaded: 3")
+        Log.i(TAG, "onPurchasesLoaded: 3")
+        Log.i("TAG", "onPurchasesLoaded: ${purchases.size}")
         if (purchases.isNotEmpty()) {
+            Log.i("TAG", "onPurchasesLoaded isNotEmpty: ${purchases.size}")
             updatePurchases(purchases)
         }
     }
@@ -65,8 +79,6 @@ fun PaywallActivity.createInAppBillingListener() = object : InAppBillingListener
             purchasedProducts.forEach {
                 Log.i(TAG, "onPurchaseAcknowledged: $it")
             }
-            // Lưu vào SharedPreferences
-            Log.i("TAG", "onPurchaseAcknowledged: luu vao day")
             PurchasePrefsHelper.savePurchasedProducts(
                 this@createInAppBillingListener,
                 purchasedProducts
@@ -89,11 +101,11 @@ fun PaywallActivity.createInAppBillingListener() = object : InAppBillingListener
 
 
     fun PaywallActivity.updatePurchases(purchases: List<Purchase>) {
+        Log.i("TAG", "updatePurchases: ${purchasedProducts.size}")
         purchases.forEach { purchase ->
             purchase.products.forEach { productId ->
                 purchasedProducts.add(productId)
                 Log.i("TAG", "updatePurchases: $productId")
-                Log.i("TAG", "updatePurchases: ${purchasedProducts.size}")
             }
         }
 

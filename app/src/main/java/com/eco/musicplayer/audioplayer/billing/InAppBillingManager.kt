@@ -10,7 +10,7 @@ import com.android.billingclient.api.*
 import com.eco.musicplayer.audioplayer.billing.model.*
 import com.eco.musicplayer.audioplayer.constants.ConstantsProductID
 import com.eco.musicplayer.audioplayer.constants.PRODUCT_ID_LIFETIME
-import com.eco.musicplayer.audioplayer.constants.PRODUCT_ID_MONTH
+import com.eco.musicplayer.audioplayer.constants.PRODUCT_ID_WEEK
 
 class InAppBillingManager(context: Context) {
 
@@ -221,11 +221,11 @@ class InAppBillingManager(context: Context) {
                 purchasedItems.addAll(
                     purchasesList.filter { it.purchaseState == Purchase.PurchaseState.PURCHASED && it.isAcknowledged }
                 )
-                purchasesList.forEach { purchase ->
+                /*purchasesList.forEach { purchase ->
                     if(purchase.products.contains(PRODUCT_ID_LIFETIME)){
                         consumeLifetimeProduct()
                     }
-                }
+                }*/
             }
             inAppQueryCompleted = true
             checkCompletion()

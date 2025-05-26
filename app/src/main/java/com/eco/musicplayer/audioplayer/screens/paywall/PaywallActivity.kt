@@ -7,7 +7,7 @@ import com.eco.musicplayer.audioplayer.billing.InAppBillingManager
 import com.eco.musicplayer.audioplayer.billing.model.BaseProductDetails
 import com.eco.musicplayer.audioplayer.helpers.PurchasePrefsHelper
 import com.eco.musicplayer.audioplayer.constants.PRODUCT_ID_LIFETIME
-import com.eco.musicplayer.audioplayer.constants.PRODUCT_ID_MONTH
+import com.eco.musicplayer.audioplayer.constants.PRODUCT_ID_WEEK
 import com.eco.musicplayer.audioplayer.constants.PRODUCT_ID_YEAR
 import com.eco.musicplayer.audioplayer.music.databinding.ActivityPaywallBinding
 
@@ -20,7 +20,7 @@ class PaywallActivity : AppCompatActivity() {
     var selectPosition = 0
     val purchasedProducts = mutableSetOf<String>()
 
-    val item1ProductId = PRODUCT_ID_MONTH
+    val item1ProductId = PRODUCT_ID_WEEK
     val item2ProductId = PRODUCT_ID_YEAR
     val item3ProductId = PRODUCT_ID_LIFETIME
 
@@ -64,7 +64,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.eco.musicplayer.audioplayer.billing.InAppBillingManager
 import com.eco.musicplayer.audioplayer.billing.model.BaseProductDetails
 import com.eco.musicplayer.audioplayer.constants.PRODUCT_ID_LIFETIME
-import com.eco.musicplayer.audioplayer.constants.PRODUCT_ID_MONTH
+import com.eco.musicplayer.audioplayer.constants.PRODUCT_ID_WEEK
 import com.eco.musicplayer.audioplayer.constants.PRODUCT_ID_YEAR
 import com.eco.musicplayer.audioplayer.helpers.PurchasePrefsHelper
 import com.eco.musicplayer.audioplayer.music.databinding.ActivityPaywallBinding
@@ -78,7 +78,7 @@ class PaywallActivity : AppCompatActivity() {
     var selectPosition = 0
     val purchasedProducts = mutableSetOf<String>()
 
-    val item1ProductId = PRODUCT_ID_MONTH
+    val item1ProductId = PRODUCT_ID_WEEK
     val item2ProductId = PRODUCT_ID_YEAR
     val item3ProductId = PRODUCT_ID_LIFETIME
 
@@ -87,11 +87,16 @@ class PaywallActivity : AppCompatActivity() {
         binding = ActivityPaywallBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
+        //PurchasePrefsHelper.clearPurchasedProducts(this)
+        //purchasedProducts.addAll(PurchasePrefsHelper.getPurchasedProducts(this))
+
+        updatePlanSelectionBasedOnPurchases()
+
         // Gọi các hàm khởi tạo
         loadSubsPolicyContent()
         setOnClicks()
         initBilling()
-        inAppBillingManager.consumeLifetimeProduct()
 
         savedInstanceState?.let {
             selectPosition = it.getInt("selectPosition", 0)

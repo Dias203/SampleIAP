@@ -16,8 +16,9 @@ import com.eco.musicplayer.audioplayer.billing.model.ProductDetailsWrapper
 import com.eco.musicplayer.audioplayer.billing.model.SkuDetailsWrapper
 import com.eco.musicplayer.audioplayer.constants.ConstantsProductID
 import com.eco.musicplayer.audioplayer.constants.PRODUCT_ID_LIFETIME
-import com.eco.musicplayer.audioplayer.constants.PRODUCT_ID_MONTH
+import com.eco.musicplayer.audioplayer.constants.PRODUCT_ID_WEEK
 import com.eco.musicplayer.audioplayer.constants.PRODUCT_ID_YEAR
+import com.eco.musicplayer.audioplayer.helpers.PurchasePrefsHelper
 import com.eco.musicplayer.audioplayer.music.R
 
 fun PaywallActivity.loadSubsPolicyContent() {
@@ -277,6 +278,7 @@ private fun PaywallActivity.isSkuDetails(plan: SkuDetailsWrapper, productId: Str
 }
 
 private fun PaywallActivity.updateSelectedPlanUi() {
+    if(PurchasePrefsHelper.getPurchasedProducts(this).contains(PRODUCT_ID_LIFETIME)) return
     listOf(
         1 to binding.btnMonthly,
         2 to binding.btnYearly,
@@ -298,49 +300,89 @@ private fun PaywallActivity.updateSelectedPlanUi() {
 }
 
 fun PaywallActivity.updatePlanSelectionBasedOnPurchases() {
+    Log.i("TAG", "updatePlanSelectionBasedOnPurchases: this func was called")
     val buttons = listOf(
-        binding.btnMonthly to PRODUCT_ID_MONTH,
+        binding.btnMonthly to PRODUCT_ID_WEEK,
         binding.btnYearly to PRODUCT_ID_YEAR,
         binding.btnLifetime to PRODUCT_ID_LIFETIME
     )
 
+    // Kiểm tra xem người dùng có đăng ký đang hoạt động hay không (hàng tuần hoặc hàng năm)
+    val hasActiveSubscription = purchasedProducts.any { it in ConstantsProductID.subsListProduct }
+
+    // Nếu đã mua gói Lifetime thì disable toàn bộ nút và kết thúc xử lý
+    if (handleLifetimePurchase(buttons)) return
+
+    val currentSubscription =
+        purchasedProducts.firstOrNull { it in ConstantsProductID.subsListProduct }
+
+    // Xử lý trạng thái các nút (disable, enable, selected)
+    val anyButtonSelected = handleButtonsState(buttons, hasActiveSubscription)
+
+    // Nếu không có nút nào được chọn thì chọn nút đầu tiên đủ điều kiện
+    handleDefaultSelectionIfNeeded(buttons, hasActiveSubscription, anyButtonSelected)
+
+
+    // Cập nhật text cho btnStartFreeTrial dựa trên gói được chọn
+    binding.btnStartFreeTrial.text = getButtonText(currentSubscription)
+    Log.d(
+        "TAG",
+        "updatePlanSelectionBasedOnPurchases: Button text set to ${binding.btnStartFreeTrial.text}, hasFreeTrial=${hasFreeTrial()}, selectPosition=$selectPosition"
+    )
+}
+
+// Nếu đã mua gói Lifetime → disable toàn bộ các nút và cập nhật badge + text nút bắt đầu
+private fun PaywallActivity.handleLifetimePurchase(buttons: List<Pair<ViewGroup, String>>): Boolean {
     if (purchasedProducts.contains(PRODUCT_ID_LIFETIME)) {
-        // Disable tất cả các nút (gói lifetime, tháng, năm) khi đã mua gói lifetime
+        // Vô hiệu hóa tất cả các nút (trọn đời, hàng tuần, hàng năm) khi mua trọn đời
         buttons.forEach { (button, id) ->
+            Log.i(TAG, "handleLifetimePurchase: $id")
             button.disablePurchasedButton()
             if (id == PRODUCT_ID_LIFETIME) {
                 updatePurchasedBadge(id)
             }
         }
+
         binding.btnStartFreeTrial.apply {
-            text = getString(R.string._continue)
+            text = getString(R.string.continue_vie)
             setOnClickListener {
                 showToast("Open Activity 2")
             }
         }
-        Log.d(
-            "TAG",
-            "updatePlanSelectionBasedOnPurchases: Lifetime purchased, button text set to Đã mua"
-        )
-        return
+
+        Log.d("TAG", "updatePlanSelectionBasedOnPurchases: Lifetime purchased, button text set to Đã mua")
+        return true
     }
+    return false
+}
 
-    val currentSubscription =
-        purchasedProducts.firstOrNull { it in ConstantsProductID.subsListProduct }
-
-    // Theo dõi xem có nút nào được chọn không
+// Duyệt qua từng nút, cập nhật trạng thái: disable nếu đã mua, hoặc disable Lifetime nếu có subscription
+private fun PaywallActivity.handleButtonsState(
+    buttons: List<Pair<ViewGroup, String>>,
+    hasActiveSubscription: Boolean
+): Boolean {
     var anyButtonSelected = false
 
     buttons.forEach { (button, productId) ->
         when {
+            // Nếu đã mua gói này → disable + hiển thị badge "Đã mua"
             purchasedProducts.contains(productId) -> {
                 button.disablePurchasedButton()
                 updatePurchasedBadge(productId)
             }
 
+            // Vô hiệu hóa nút trọn đời nếu có đăng ký đang hoạt động
+            productId == PRODUCT_ID_LIFETIME && hasActiveSubscription -> {
+                button.disable()
+                button.alpha = 0.5f
+                button.findViewById<TextView>(R.id.tv2)?.text =
+                    getString(R.string.not_available, getString(R.string.life_time_vie))
+            }
+
+            // Gói chưa mua → xử lý enable/selected
             else -> {
                 val buttonPosition = when (productId) {
-                    PRODUCT_ID_MONTH -> 1
+                    PRODUCT_ID_WEEK -> 1
                     PRODUCT_ID_YEAR -> 2
                     PRODUCT_ID_LIFETIME -> 3
                     else -> 0
@@ -363,16 +405,27 @@ fun PaywallActivity.updatePlanSelectionBasedOnPurchases() {
         }
     }
 
-    // Nếu không có nút nào được chọn mà vẫn muốn phải chọn một nút, hãy tìm nút đủ điều kiện đầu tiên
+    return anyButtonSelected
+}
+
+// Nếu không có nút nào được chọn, tự động chọn gói chưa mua đầu tiên (trừ lifetime nếu bị khóa)
+private fun PaywallActivity.handleDefaultSelectionIfNeeded(
+    buttons: List<Pair<ViewGroup, String>>,
+    hasActiveSubscription: Boolean,
+    anyButtonSelected: Boolean
+) {
+    Log.i("TAG", "handleDefaultSelectionIfNeeded: ")
     if (!anyButtonSelected && selectPosition != 0) {
-        // Tìm gói đầu tiên chưa mua và chọn gói đó
+        // Tìm gói đầu tiên chưa mua và không bị disable (trừ lifetime nếu có subscription)
         val firstAvailablePosition = buttons.indexOfFirst { (_, productId) ->
-            !purchasedProducts.contains(productId)
+            !purchasedProducts.contains(productId) &&
+                    !(productId == PRODUCT_ID_LIFETIME && hasActiveSubscription)
         } + 1
 
         if (firstAvailablePosition > 0) {
             selectPosition = firstAvailablePosition
-            // Cập nhật UI cho vị trí mới được chọn
+
+            // Cập nhật tvSub cho vị trí mới được chọn
             detailsMap[selectPosition]?.let { plan ->
                 binding.tvSub.apply {
                     text = getSubscriptionSummary(plan, plan.productId)
@@ -380,22 +433,17 @@ fun PaywallActivity.updatePlanSelectionBasedOnPurchases() {
                 }
             }
 
-            // Cập nhật lựa chọn nút
+            // Cập nhật lại UI selected button
             buttons.forEachIndexed { index, (button, productId) ->
-                if (!purchasedProducts.contains(productId)) {
+                if (!purchasedProducts.contains(productId) &&
+                    !(productId == PRODUCT_ID_LIFETIME && hasActiveSubscription)) {
                     button.updateSelection(index + 1 == selectPosition)
                 }
             }
         }
     }
-
-    // Cập nhật text cho btnStartFreeTrial dựa trên gói được chọn
-    binding.btnStartFreeTrial.text = getButtonText(currentSubscription)
-    Log.d(
-        "TAG",
-        "updatePlanSelectionBasedOnPurchases: Button text set to ${binding.btnStartFreeTrial.text}, hasFreeTrial=${hasFreeTrial()}, selectPosition=$selectPosition"
-    )
 }
+
 
 
 // Hàm xác định text cho btnStartFreeTrial
@@ -425,7 +473,7 @@ private fun PaywallActivity.getButtonText(currentSubscription: String?): String 
 
         return when {
             newLevel > currentLevel -> getString(R.string.upgrade)
-           else -> getString(R.string.downgrade)
+            else -> getString(R.string.downgrade)
         }
     }
 
@@ -468,21 +516,21 @@ private fun PaywallActivity.hasFreeTrial(): Boolean {
 
 private fun PaywallActivity.updatePurchasedBadge(productId: String) {
     when (productId) {
-        PRODUCT_ID_MONTH -> binding.bestDeal.updatePurchasedBadge()
+        PRODUCT_ID_WEEK -> binding.bestDeal.updatePurchasedBadge()
         PRODUCT_ID_YEAR -> binding.bestDeal2.updatePurchasedBadge()
         PRODUCT_ID_LIFETIME -> binding.bestDeal3.updatePurchasedBadge()
     }
 }
 
 private fun getSubscriptionLevel(productId: String) = when (productId) {
-    PRODUCT_ID_MONTH -> 1
+    PRODUCT_ID_WEEK -> 1
     PRODUCT_ID_YEAR -> 2
     PRODUCT_ID_LIFETIME -> 3
     else -> 0
 }
 
 private fun PaywallActivity.getTitleText(billingTitle: String) = when {
-    billingTitle.contains(PRODUCT_ID_MONTH, true) -> getString(R.string.sub_week)
+    billingTitle.contains(PRODUCT_ID_WEEK, true) -> getString(R.string.sub_week)
     billingTitle.contains(PRODUCT_ID_YEAR, true) -> getString(R.string.sub_year)
     billingTitle.contains(PRODUCT_ID_LIFETIME, true) -> getString(R.string.life_time_vie)
     else -> billingTitle

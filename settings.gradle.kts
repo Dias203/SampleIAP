@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "CombineSku_ProductDetail"
+rootProject.name = "SAMPLE IAP"
 include(":app")
  
