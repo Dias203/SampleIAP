@@ -101,7 +101,6 @@ private fun ViewGroup.setupPlanButton(
     productId: String,
     isSelected: Boolean
 ) {
-    val tv2 = findViewById<TextView>(R.id.tv2).apply { text = activity.getTitleText(productId) }
     val tv3 = findViewById<TextView>(R.id.tv3)
     val tv4 = findViewById<TextView>(R.id.tv4)
     val tv5 = findViewById<TextView>(R.id.tv5)
@@ -132,7 +131,7 @@ private fun PaywallActivity.setupProductDetails(
         productDetails.oneTimePurchaseOfferDetails?.let { offer ->
             tv3.setVisibleText("Thanh toán một lần")
             tv4.text = offer.formattedPrice
-            tv5.text = "trọn đời"
+            tv5.text = getString(R.string.life_time_vie)
         } ?: setupEmptyLifetime(tv3, tv4, tv5)
     } else {
         val firstOffer = productDetails.subscriptionOfferDetails?.firstOrNull()
@@ -612,6 +611,7 @@ private fun createClickableSpanGray(onClick: () -> Unit) =
     }
 
 private fun ViewGroup.disablePurchasedButton() {
+    Log.i("TAG", "disablePurchasedButton: 1")
     isEnabled = false
     findViewById<AppCompatImageView>(R.id.radioButton1).setImageResource(R.drawable.ic_uncheck)
     setBackgroundResource(R.drawable.bg_disable)
@@ -619,6 +619,7 @@ private fun ViewGroup.disablePurchasedButton() {
 }
 
 private fun ViewGroup.updateSelection(isSelected: Boolean) {
+    Log.i("TAG", "updateSelection: 21")
     setBackgroundResource(if (isSelected) R.drawable.bg_selected_paywall else R.drawable.bg_unselected_paywall)
     findViewById<AppCompatImageView>(R.id.radioButton1).setImageResource(if (isSelected) R.drawable.ic_checked else R.drawable.ic_uncheck)
     isEnabled = true

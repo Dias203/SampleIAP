@@ -221,6 +221,7 @@ class InAppBillingManager(context: Context) {
                 purchasedItems.addAll(
                     purchasesList.filter { it.purchaseState == Purchase.PurchaseState.PURCHASED && it.isAcknowledged }
                 )
+                //Tiêu thụ gói lifetime
                 /*purchasesList.forEach { purchase ->
                     if(purchase.products.contains(PRODUCT_ID_LIFETIME)){
                         consumeLifetimeProduct()

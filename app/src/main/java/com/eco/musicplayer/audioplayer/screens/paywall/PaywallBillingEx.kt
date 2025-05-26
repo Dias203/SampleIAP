@@ -32,18 +32,7 @@ fun PaywallActivity.createInAppBillingListener() = object : InAppBillingListener
         showToast("Connecting to Google Play...")
     }
 
-    /*override fun onProductsLoaded(products: List<BaseProductDetails>) {
-        PurchasePrefsHelper.savePurchasedProducts(this@createInAppBillingListener, purchasedProducts)
-        if(purchasedProducts.isNotEmpty()) {
-            Log.i("TAG", "onProductsLoaded: ${purchasedProducts.size}")
-            purchasedProducts.addAll(PurchasePrefsHelper.getPurchasedProducts(this@createInAppBillingListener))
-            loadPriceUI(products)
-            updatePlanSelectionBasedOnPurchases()
-        } else {
-            Log.i("TAG", "onProductsLoaded: purchasedProducts isEmpty")
-            loadPriceUI(products)
-        }
-    }*/
+
     override fun onProductsLoaded(products: List<BaseProductDetails>) {
         loadPriceUI(products)
         updatePlanSelectionBasedOnPurchases()
